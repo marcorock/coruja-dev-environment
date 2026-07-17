@@ -1,0 +1,34 @@
+{
+    "name": "Coruja Dev Environment",
+    "dockerComposeFile": "../compose.yaml",
+    "service": "web",
+    "workspaceFolder": "/var/www/projects",
+    "shutdownAction": "none",
+    "remoteUser": "developer",
+    "updateRemoteUserUID": true,
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "xdebug.php-debug",
+                "neilbrayfield.php-docblocker",
+                "redhat.vscode-yaml",
+                "mikestead.dotenv",
+                "eamodio.gitlens",
+                "formulahendry.auto-rename-tag",
+                "EditorConfig.EditorConfig"
+            ],
+            "settings": {
+                "php.validate.executablePath": "/usr/local/bin/php",
+                "intelephense.environment.phpVersion": "8.3",
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.profiles.linux": {
+                    "zsh": {
+                        "path": "/bin/zsh"
+                    }
+                }
+            }
+        }
+    },
+    "postStartCommand": "php -v && composer --version && zsh --version"
+}

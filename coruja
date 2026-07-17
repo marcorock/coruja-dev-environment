@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+
+set -e
+
+VERSION="0.2.0"
+
+SOURCE="${BASH_SOURCE[0]}"
+
+while [[ -L "$SOURCE" ]]; do
+    DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    SOURCE="$(readlink "$SOURCE")"
+
+    [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+
+CORUJA_ROOT="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+
+cd "$CORUJA_ROOT"
+
+source "${CORUJA_ROOT}/cli/core.sh"
+source "${CORUJA_ROOT}/cli/commands/environment.sh"
+source "${CORUJA_ROOT}/cli/commands/projects.sh"
+source "${CORUJA_ROOT}/cli/commands/doctor.sh"
+source "${CORUJA_ROOT}/cli/commands/database.sh"
+source "${CORUJA_ROOT}/cli/commands/project.sh"
+source "${CORUJA_ROOT}/cli/commands/services.sh"
+source "${CORUJA_ROOT}/cli/commands/redis.sh"
+
+show_help() {
+    show_header
+
+    echo "Uso:"
+    echo "  coruja <comando> [argumentos]"
+    echo ""
+    echo "Ambiente:"
+    echo "  up                  Inicia o ambiente"
+    echo "  down                Para o ambiente"
+    echo "  restart             Reinicia os serviços"
+    echo "  build               Reconstrói e inicia"
+    echo "  status              Exibe os containers"
+    echo "  logs [serviço]      Exibe os logs"
+    echo "  shell               Abre o Zsh no PHP"
+    echo ""
+    # echo "Projetos:"
+    # echo "  new <nome>          Cria um projeto"
+    # echo "  projects            Lista os projetos"
+    # echo ""
+    echo "Projetos:"
+    echo "  new <nome>                  Cria um projeto"
+    echo "  projects                    Lista os projetos"
+    echo "  project list                Lista os projetos"
+    echo "  project info <nome>         Exibe informações"
+    echo "  project clone <a> <b>       Duplica um projeto"
+    echo "  project remove <nome>       Remove um projeto"
+    echo ""
+    echo "Banco:"
+    echo "  db list             Lista os bancos"
+    echo "  db create <nome>    Cria um banco"
+    echo "  db drop <nome>      Exclui um banco"
+    echo "  db shell            Abre o MariaDB"
+    echo ""
+    echo "Serviços:"
+    echo "  service status              Lista os serviços"
+    echo "  service restart <nome>      Reinicia um serviço"
+    echo "  service logs <nome>         Exibe os logs"
+    echo ""
+    echo "Redis:"
+    echo "  redis ping                  Testa a conexão"
+    echo "  redis shell                 Abre o terminal Redis"
+    echo "  redis info                  Exibe informações"
+    echo "  redis flush                 Apaga os dados"
+    echo ""
+    echo "Sistema:"
+    echo "  doctor              Verifica o ambiente"
+    echo "  version             Exibe a versão"
+    echo "  help                Exibe esta ajuda"
+    echo ""
+}
+
+case "${1:-help}" in
+    up)
+        command_up
+        ;;
+
+    down)
+        command_down
+        ;;
+
+    restart)
+        command_restart
+        ;;
+
+    build)
+        command_build
+        ;;
+
+    status)
+        command_status
+        ;;
+
+    logs)
+        command_logs "${2:-}"
+        ;;
+
+    shell)
+        command_shell
+        ;;
+
+    new)
+        command_new "${2:-}"
+        ;;
+    
+    project)
+        command_project "${2:-help}" "${3:-}" "${4:-}"
+        ;;
+
+    db)
+        command_db "${2:-help}" "${3:-}" "${4:-}"
+        ;;
+    service)
+        command_service "${2:-help}" "${3:-}"
+        ;;
+
+    redis)
+        command_redis "${2:-help}"
+        ;;
+
+    doctor)
+        command_doctor
+        ;;
+
+    version)
+        echo "Coruja Dev Environment ${VERSION}"
+        ;;
+
+    help|-h|--help)
+        show_help
+        ;;
+
+    *)
+        echo "Comando desconhecido: ${1}"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac

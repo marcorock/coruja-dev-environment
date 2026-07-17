@@ -1,0 +1,39 @@
+.env
+.DS_Store
+
+backups/*
+!backups/.gitkeep
+
+.vscode/settings.json
+
+# .env
+# data/mariadb/*
+# !data/mariadb/.gitkeep
+# .DS_Store
+# backups/*
+# !backups/.gitkeep
+
+# .vscode/settings.json
+
+# Banco de dados
+data/mariadb/
+
+# Logs
+logs/
+
+# Vendor
+vendor/
+
+# Arquivos temporários
+tmp/
+cache/
+
+# Configurações locais
+.env
+.env.local
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store

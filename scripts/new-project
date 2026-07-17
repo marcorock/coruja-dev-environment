@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+
+set -e
+
+PROJECT_NAME="$1"
+
+if [ -z "$PROJECT_NAME" ]; then
+    echo "Uso: ./scripts/new-project nome-do-projeto"
+    exit 1
+fi
+
+if ! [[ "$PROJECT_NAME" =~ ^[a-z0-9-]+$ ]]; then
+    echo "Use apenas letras minúsculas, números e hífens."
+    exit 1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENVIRONMENT_DIR="$(dirname "$SCRIPT_DIR")"
+
+cd "$ENVIRONMENT_DIR"
+
+if [ ! -f ".env" ]; then
+    echo "Arquivo .env não encontrado."
+    exit 1
+fi
+
+set -a
+source "${ENVIRONMENT_DIR}/.env"
+source "${ENVIRONMENT_DIR}/config/coruja.conf"
+set +a
+
+PROJECT_PATH="${CORUJA_PROJECTS_DIR}/${PROJECT_NAME}"
+DATABASE_NAME="${PROJECT_NAME//-/_}"
+
+if [ -d "$PROJECT_PATH" ]; then
+    echo "O projeto já existe: $PROJECT_PATH"
+    exit 1
+fi
+
+echo "Criando projeto: $PROJECT_NAME"
+
+mkdir -p "$PROJECT_PATH"/{public,app,templates,config,routes,storage/logs}
+
+cat > "$PROJECT_PATH/composer.json" <<EOF
+{
+    "name": "coruja/${PROJECT_NAME}",
+    "description": "Projeto PHP criado com o Coruja Dev Environment",
+    "type": "project",
+    "require": {
+        "php": "^8.3",
+        "pecee/simple-router": "^5.4",
+        "twig/twig": "^3.24",
+        "twbs/bootstrap": "^5.3",
+        "twbs/bootstrap-icons": "^1.13",
+        "vlucas/phpdotenv": "^5.6",
+        "mobiledetect/mobiledetectlib": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\\\": "app/"
+        }
+    }
+}
+EOF
+
+cat > "$PROJECT_PATH/.env" <<EOF
+APP_NAME="${PROJECT_NAME}"
+APP_ENV=development
+APP_DEBUG=true
+APP_URL=http://${PROJECT_NAME}.localhost
+
+DB_HOST=database
+DB_PORT=3306
+DB_DATABASE=${DATABASE_NAME}
+DB_USERNAME=${MARIADB_USER}
+DB_PASSWORD=${MARIADB_PASSWORD}
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_DATABASE=0
+EOF
+
+cat > "$PROJECT_PATH/.gitignore" <<EOF
+/vendor/
+/.env
+/storage/logs/*
+!/storage/logs/.gitkeep
+.DS_Store
+EOF
+
+touch "$PROJECT_PATH/storage/logs/.gitkeep"
+
+cat > "$PROJECT_PATH/public/index.php" <<'EOF'
+<?php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->safeLoad();
+
+$loader = new FilesystemLoader(dirname(__DIR__) . '/templates');
+$twig = new Environment($loader, [
+    'cache' => false,
+    'debug' => true,
+]);
+
+echo $twig->render('home.html.twig', [
+    'projectName' => $_ENV['APP_NAME'] ?? 'Projeto PHP',
+    'phpVersion' => PHP_VERSION,
+]);
+EOF
+
+cat > "$PROJECT_PATH/templates/home.html.twig" <<'EOF'
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ projectName }}</title>
+</head>
+<body>
+    <main>
+        <h1>{{ projectName }}</h1>
+        <p>PHP {{ phpVersion }}</p>
+        <p>Projeto criado com sucesso.</p>
+    </main>
+</body>
+</html>
+EOF
+
+echo "Criando banco: $DATABASE_NAME"
+
+docker compose exec -T database mariadb \
+    -uroot \
+    -p"${MARIADB_ROOT_PASSWORD}" <<EOF
+CREATE DATABASE IF NOT EXISTS \`${DATABASE_NAME}\`
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+GRANT ALL PRIVILEGES ON \`${DATABASE_NAME}\`.* TO '${MARIADB_USER}'@'%';
+
+FLUSH PRIVILEGES;
+EOF
+
+echo "Instalando dependências do Composer"
+
+docker compose exec -T \
+    --user "$(id -u):$(id -g)" \
+    -e HOME=/home/developer \
+    -e COMPOSER_HOME=/home/developer/.composer \
+    -w "/var/www/projects/${PROJECT_NAME}" \
+    web composer install
+
+echo ""
+echo "Projeto criado com sucesso."
+echo "Pasta: ${PROJECT_PATH}"
+echo "Banco: ${DATABASE_NAME}"
+echo "Endereço: http://${PROJECT_NAME}.localhost"
