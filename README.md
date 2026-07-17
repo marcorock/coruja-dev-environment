@@ -1,151 +1,105 @@
-## Projetos relacionados
-
-### Coruja Dev Environment
-
-Responsável pelo ambiente de desenvolvimento:
-
-- Docker
-- PHP
-- Apache
-- MariaDB
-- Redis
-- Mailpit
-- Traefik
-- phpMyAdmin
-- Dev Containers
-- Xdebug
-- Zsh
-- CLI do ambiente
-
-### Coruja Framework
-
-Responsável pela arquitetura e pelos componentes das aplicações PHP.
-
-Os dois projetos são independentes. É possível usar o ambiente sem utilizar o framework.
-
 # Coruja Dev Environment
 
-Ambiente compartilhado para vários projetos PHP usando Docker, Apache, PHP 8.3, MariaDB 11, phpMyAdmin, Composer, Dev Containers, Zsh e Xdebug.
+> Ambiente de desenvolvimento moderno para PHP baseado em Docker, criado
+> para substituir o Laragon e oferecer uma plataforma única para
+> desenvolvimento no macOS, WSL e Linux.
 
-## Estrutura recomendada no WSL
+## Status
 
-```text
-/home/seu-usuario/www/
-├── docker-environment/
-└── projects/
-    ├── projeto1/
-    ├── coruja-rabiscada/
-    └── outros-projetos/
+**Versão:** `v0.1.0`
+
+Primeira versão funcional contendo:
+
+-   Docker + Docker Compose
+-   Traefik com URLs `*.localhost`
+-   PHP 8.3 + Apache
+-   MariaDB 11
+-   phpMyAdmin
+-   Mailpit
+-   Dev Containers
+-   Xdebug
+-   Composer
+-   CLI `coruja`
+-   Criação e remoção de projetos
+-   Banco de dados automático
+-   Documentação inicial
+-   Troubleshooting
+
+## Projetos relacionados
+
+-   **Coruja Dev Environment**: infraestrutura de desenvolvimento.
+-   **Coruja Framework**: framework PHP independente que utiliza este
+    ambiente.
+
+## Estrutura
+
+``` text
+/home/<usuario>/www/
+├── coruja-dev-environment/
+├── projects/
+├── data/
+│   └── mariadb/
+├── backups/
+└── templates/
 ```
 
-## Instalação no WSL
+## Instalação
 
-Extraia este pacote dentro do WSL, preferencialmente em:
-
-```bash
-~/www/docker-environment
-```
-
-Crie a pasta dos projetos:
-
-```bash
-mkdir -p ~/www/projects
-```
-
-Entre no ambiente:
-
-```bash
-cd ~/www/docker-environment
-```
-
-Crie o `.env`:
-
-```bash
+``` bash
+git clone <repositorio>
+cd coruja-dev-environment
 cp .env.example .env
+coruja up
+coruja doctor
 ```
 
-Descubra os valores do WSL:
+## URLs
 
-```bash
-echo $HOME
-id -u
-id -g
+  Serviço      URL
+  ------------ ----------------------------------
+  Projetos     http://nome-do-projeto.localhost
+  phpMyAdmin   http://phpmyadmin.localhost
+  Mailpit      http://mail.localhost
+  Traefik      http://localhost:8082/dashboard/
+
+## CLI
+
+### Ambiente
+
+``` text
+coruja up
+coruja down
+coruja restart
+coruja build
+coruja status
+coruja logs
+coruja shell
+coruja doctor
+coruja version
+coruja help
 ```
 
-Edite `.env` e ajuste:
+### Projetos
 
-```env
-PROJECTS_ROOT=/home/seu-usuario/www/projects
-USER_UID=1000
-USER_GID=1000
+``` text
+coruja new <nome>
+coruja projects
+coruja project remove <nome>
 ```
 
-Mantenha os arquivos dentro de `/home/...`, e não em `/mnt/c`, para melhorar o desempenho do Docker, Composer e Git.
+### Banco
 
-## Subir o ambiente
-
-```bash
-docker compose up -d --build
+``` text
+coruja db list
 ```
 
-Confira:
+## Roadmap v0.2.0
 
-```bash
-docker compose ps
-```
-
-## Endereços
-
-Aplicações:
-
-```text
-http://nome-do-projeto.localhost:8080
-```
-
-phpMyAdmin:
-
-```text
-http://localhost:8081
-```
-
-Credenciais iniciais:
-
-```text
-root / root
-developer / developer
-```
-
-## Criar um projeto
-
-```bash
-chmod +x scripts/new-project
-./scripts/new-project meu-projeto
-```
-
-Acesse:
-
-```text
-http://meu-projeto.localhost:8080
-```
-
-## Dev Container
-
-Abra `docker-environment` no VS Code conectado ao WSL e execute:
-
-```text
-Dev Containers: Rebuild and Reopen in Container
-```
-
-## Xdebug
-
-No VS Code, execute:
-
-```text
-Escutar Xdebug
-```
-
-Depois abra:
-
-```text
-http://meu-projeto.localhost:8080/?XDEBUG_TRIGGER=1
-```
+-   Auditoria completa
+-   Correção definitiva de permissões
+-   Install automatizado
+-   Importação de projetos do Laragon
+-   Backup e Restore
+-   Doctor 2.0
+-   Configuração interativa
+-   Validação em macOS, WSL e Linux
