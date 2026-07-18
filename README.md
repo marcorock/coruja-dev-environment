@@ -314,13 +314,13 @@ falhe, os arquivos do projeto são restaurados.
 Criar backup:
 
 ```bash
-coruja db backup meu_banco
+coruja db backup meu_banco 
 ```
 
 Restaurar:
 
 ```bash
-coruja db restore meu_banco.sql
+coruja db restore meu_banco.sql 
 ```
 
 Restaurar em outro banco:

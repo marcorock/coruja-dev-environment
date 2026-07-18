@@ -157,8 +157,8 @@ command_db_restore() {
         echo "Informe o arquivo SQL."
         echo ""
         echo "Exemplo:"
-        echo "  coruja db restore backups/meu_banco.sql"
-        echo "  coruja db restore backups/meu_banco.sql banco_destino"
+        echo "  coruja db restore meu_banco.sql"
+        echo "  coruja db restore meu_banco.sql banco_destino"
         exit 1
     fi
 
