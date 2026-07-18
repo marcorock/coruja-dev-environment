@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.3.32-apache
 
 ARG USERNAME=developer
 ARG USER_UID=1000

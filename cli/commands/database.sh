@@ -49,6 +49,7 @@ command_db_drop() {
     load_environment
 
     local database_name="${1:-}"
+    local skip_confirmation="${2:-false}"
 
     if [[ -z "$database_name" ]]; then
         echo "Informe o nome do banco."
@@ -63,17 +64,26 @@ command_db_drop() {
         exit 1
     fi
 
-    read -r -p "Deseja realmente excluir o banco '${database_name}'? [s/N] " confirmation
+    if [[ "$skip_confirmation" != "true" ]]; then
+        local confirmation
 
-    if [[ ! "$confirmation" =~ ^[sS]$ ]]; then
-        echo "Operação cancelada."
-        return
+        read -r -p \
+            "Deseja realmente excluir o banco '${database_name}'? [s/N] " \
+            confirmation
+
+        if [[ ! "$confirmation" =~ ^[sS]$ ]]; then
+            echo "Operação cancelada."
+            return 0
+        fi
     fi
 
-    docker compose exec -T database mariadb \
+    if ! docker compose exec -T database mariadb \
         -uroot \
         -p"${MARIADB_ROOT_PASSWORD}" \
-        -e "DROP DATABASE IF EXISTS \`${database_name}\`;"
+        -e "DROP DATABASE IF EXISTS \`${database_name}\`;"; then
+        echo "Não foi possível remover o banco: ${database_name}"
+        return 1
+    fi
 
     echo "Banco removido: ${database_name}"
 }
@@ -106,7 +116,7 @@ command_db_backup() {
         exit 1
     fi
 
-    local backup_dir="${CORUJA_ROOT}/backups"
+    local backup_dir="${CORUJA_BACKUPS_DIR}"
     local timestamp
     local backup_file
 
@@ -147,13 +157,17 @@ command_db_restore() {
         echo "Informe o arquivo SQL."
         echo ""
         echo "Exemplo:"
-        echo "  coruja db restore backups/meu_banco.sql"
-        echo "  coruja db restore backups/meu_banco.sql banco_destino"
+        echo "  coruja db restore meu_banco.sql"
+        echo "  coruja db restore meu_banco.sql banco_destino"
         exit 1
     fi
 
     if [[ "$input_file" != /* ]]; then
-        input_file="${CORUJA_ROOT}/${input_file}"
+        if [[ -f "${CORUJA_BACKUPS_DIR}/${input_file}" ]]; then
+            input_file="${CORUJA_BACKUPS_DIR}/${input_file}"
+        else
+            input_file="${CORUJA_ROOT}/${input_file}"
+        fi
     fi
 
     if [[ ! -f "$input_file" ]]; then

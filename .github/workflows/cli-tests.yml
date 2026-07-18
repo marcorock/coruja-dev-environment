@@ -1,0 +1,38 @@
+name: CLI Tests
+
+on:
+  push:
+    branches:
+      - main
+      - "audit/**"
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cli-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Bash and CLI tests
+
+    runs-on: ubuntu-24.04
+
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Show Bash version
+        run: bash --version
+
+      - name: Run test suite
+        run: bash tests/run.sh
