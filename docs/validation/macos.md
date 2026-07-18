@@ -37,3 +37,12 @@ Verificando HTTP...
 ✓ Mailpit: HTTP 200
 
 Ambiente saudável.
+
+```
+
+O retorno HTTP 404 do Gateway é esperado quando a raiz do Traefik é acessada
+sem um domínio de projeto.
+
+## Resultado
+
+O ambiente foi considerado funcional e compatível com macOS.
