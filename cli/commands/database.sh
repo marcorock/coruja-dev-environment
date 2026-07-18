@@ -49,6 +49,7 @@ command_db_drop() {
     load_environment
 
     local database_name="${1:-}"
+    local skip_confirmation="${2:-false}"
 
     if [[ -z "$database_name" ]]; then
         echo "Informe o nome do banco."
@@ -63,17 +64,26 @@ command_db_drop() {
         exit 1
     fi
 
-    read -r -p "Deseja realmente excluir o banco '${database_name}'? [s/N] " confirmation
+    if [[ "$skip_confirmation" != "true" ]]; then
+        local confirmation
 
-    if [[ ! "$confirmation" =~ ^[sS]$ ]]; then
-        echo "Operação cancelada."
-        return
+        read -r -p \
+            "Deseja realmente excluir o banco '${database_name}'? [s/N] " \
+            confirmation
+
+        if [[ ! "$confirmation" =~ ^[sS]$ ]]; then
+            echo "Operação cancelada."
+            return 0
+        fi
     fi
 
-    docker compose exec -T database mariadb \
+    if ! docker compose exec -T database mariadb \
         -uroot \
         -p"${MARIADB_ROOT_PASSWORD}" \
-        -e "DROP DATABASE IF EXISTS \`${database_name}\`;"
+        -e "DROP DATABASE IF EXISTS \`${database_name}\`;"; then
+        echo "Não foi possível remover o banco: ${database_name}"
+        return 1
+    fi
 
     echo "Banco removido: ${database_name}"
 }
