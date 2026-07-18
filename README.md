@@ -375,12 +375,12 @@ O comando verifica:
 
 ## Roadmap v0.2.0
 
-- instalador automatizado;
-- importação de projetos do Laragon;
-- diagnóstico HTTP completo;
-- configuração interativa;
-- testes automatizados da CLI;
-- validação completa em macOS;
-- validação completa em Linux;
-- documentação de migração;
-- templates de projeto.
+- [ ] instalador automatizado;
+- [ ] importação de projetos do Laragon;
+- [x] diagnóstico HTTP completo;
+- [ ] configuração interativa;
+- [x] testes automatizados da CLI;
+- [x] validação completa em macOS;
+- [ ] validação completa em Linux;
+- [ ] documentação de migração;
+- [ ] templates de projeto.
