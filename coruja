@@ -29,51 +29,53 @@ source "${CORUJA_ROOT}/cli/commands/redis.sh"
 show_help() {
     show_header
 
-    echo "Uso:"
-    echo "  coruja <comando> [argumentos]"
-    echo ""
-    echo "Ambiente:"
-    echo "  up                  Inicia o ambiente"
-    echo "  down                Para o ambiente"
-    echo "  restart             Reinicia os serviços"
-    echo "  build               Reconstrói e inicia"
-    echo "  status              Exibe os containers"
-    echo "  logs [serviço]      Exibe os logs"
-    echo "  shell               Abre o Zsh no PHP"
-    echo ""
-    # echo "Projetos:"
-    # echo "  new <nome>          Cria um projeto"
-    # echo "  projects            Lista os projetos"
-    # echo ""
-    echo "Projetos:"
-    echo "  new <nome>                  Cria um projeto"
-    echo "  projects                    Lista os projetos"
-    echo "  project list                Lista os projetos"
-    echo "  project info <nome>         Exibe informações"
-    echo "  project clone <a> <b>       Duplica um projeto"
-    echo "  project remove <nome>       Remove um projeto"
-    echo ""
-    echo "Banco:"
-    echo "  db list             Lista os bancos"
-    echo "  db create <nome>    Cria um banco"
-    echo "  db drop <nome>      Exclui um banco"
-    echo "  db shell            Abre o MariaDB"
-    echo ""
-    echo "Serviços:"
-    echo "  service status              Lista os serviços"
-    echo "  service restart <nome>      Reinicia um serviço"
-    echo "  service logs <nome>         Exibe os logs"
-    echo ""
-    echo "Redis:"
-    echo "  redis ping                  Testa a conexão"
-    echo "  redis shell                 Abre o terminal Redis"
-    echo "  redis info                  Exibe informações"
-    echo "  redis flush                 Apaga os dados"
-    echo ""
-    echo "Sistema:"
-    echo "  doctor              Verifica o ambiente"
-    echo "  version             Exibe a versão"
-    echo "  help                Exibe esta ajuda"
+    cat <<'EOF'
+Uso:
+  coruja <comando> [argumentos]
+
+Ambiente:
+  up                              Inicia o ambiente
+  down                            Para o ambiente
+  restart                         Reinicia os serviços
+  build                           Reconstrói e inicia o ambiente
+  status                          Exibe o estado dos containers
+  logs [serviço]                  Exibe os logs
+  shell                           Abre o Zsh no container PHP
+
+Projetos:
+  new <nome>                      Cria um projeto
+  projects                        Lista os projetos
+  project list                    Lista os projetos
+  project info <nome>             Exibe informações do projeto
+  project clone <origem> <destino>
+                                  Duplica um projeto
+  project remove <nome>           Remove um projeto
+
+Banco de dados:
+  db list                         Lista os bancos
+  db create <nome>                Cria um banco
+  db drop <nome>                  Exclui um banco
+  db backup <banco>               Cria um backup SQL
+  db restore <arquivo> [banco]    Restaura um backup SQL
+  db shell                        Abre o terminal do MariaDB
+
+Serviços:
+  service status                  Lista os serviços
+  service restart <nome>          Reinicia um serviço
+  service logs <nome>             Exibe os logs de um serviço
+
+Redis:
+  redis ping                      Testa a conexão
+  redis shell                     Abre o terminal Redis
+  redis info                      Exibe informações do Redis
+  redis flush                     Apaga os dados do Redis
+
+Sistema:
+  doctor                          Verifica a saúde do ambiente
+  version                         Exibe a versão
+  help                            Exibe esta ajuda
+EOF
+
     echo ""
 }
 
@@ -122,7 +124,7 @@ case "${1:-help}" in
         ;;
 
     redis)
-        command_redis "${2:-help}"
+        command_redis "${2:-help}" "${3:-}"
         ;;
 
     doctor)
