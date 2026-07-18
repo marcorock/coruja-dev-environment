@@ -26,10 +26,18 @@ command_projects() {
         exit 1
     fi
 
-    find "$CORUJA_PROJECTS_DIR" \
-        -mindepth 1 \
-        -maxdepth 1 \
-        -type d \
-        -printf "%f\n" \
-        | sort
+    local project_path
+    local project_names=()
+
+    for project_path in "${CORUJA_PROJECTS_DIR}"/*; do
+        [[ -d "$project_path" ]] || continue
+        project_names+=("$(basename "$project_path")")
+    done
+
+    if (( ${#project_names[@]} == 0 )); then
+        echo "Nenhum projeto encontrado."
+        return 0
+    fi
+
+    printf '%s\n' "${project_names[@]}" | sort
 }

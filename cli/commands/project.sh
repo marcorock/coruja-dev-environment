@@ -171,18 +171,26 @@ command_project_clone() {
 
     echo "Clonando projeto..."
 
-    cp -r "$source_path" "$target_path"
-    chown -R "$(id -u):$(id -g)" "$target_path"
+    cp -R "$source_path" "$target_path"
 
     rm -rf "${target_path}/.git"
     rm -rf "${target_path}/vendor"
 
     if [[ -f "${target_path}/.env" ]]; then
-        sed -i \
-            -e "s|^APP_NAME=.*|APP_NAME=\"${target_name}\"|" \
-            -e "s|^APP_URL=.*|APP_URL=http://${target_name}.localhost|" \
-            -e "s|^DB_DATABASE=.*|DB_DATABASE=${target_database}|" \
-            "${target_path}/.env"
+        replace_env_value \
+            "${target_path}/.env" \
+            "APP_NAME" \
+            "\"${target_name}\""
+
+        replace_env_value \
+            "${target_path}/.env" \
+            "APP_URL" \
+            "http://${target_name}.localhost"
+
+        replace_env_value \
+            "${target_path}/.env" \
+            "DB_DATABASE" \
+            "${target_database}"
     fi
 
     command_db_create "$target_database"

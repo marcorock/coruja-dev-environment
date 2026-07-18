@@ -47,3 +47,44 @@ load_coruja_config() {
 
     source "$config_file"
 }
+
+replace_env_value() {
+    local file="$1"
+    local key="$2"
+    local value="$3"
+    local temporary_file
+
+    if [[ ! -f "$file" ]]; then
+        echo "Arquivo não encontrado: ${file}"
+        return 1
+    fi
+
+    temporary_file="$(mktemp "${TMPDIR:-/tmp}/coruja-env.XXXXXX")"
+
+    awk \
+        -v key="$key" \
+        -v value="$value" '
+        BEGIN {
+            updated = 0
+        }
+
+        $0 ~ "^" key "=" {
+            print key "=" value
+            updated = 1
+            next
+        }
+
+        {
+            print
+        }
+
+        END {
+            if (!updated) {
+                print key "=" value
+            }
+        }
+    ' "$file" > "$temporary_file"
+
+    cat "$temporary_file" > "$file"
+    rm -f "$temporary_file"
+}
