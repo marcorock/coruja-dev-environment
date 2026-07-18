@@ -320,13 +320,13 @@ coruja db backup meu_banco
 Restaurar:
 
 ```bash
-coruja db restore backups/meu_banco.sql
+coruja db restore meu_banco.sql
 ```
 
 Restaurar em outro banco:
 
 ```bash
-coruja db restore backups/meu_banco.sql banco_destino
+coruja db restore meu_banco.sql banco_destino
 ```
 
 ## Dev Container

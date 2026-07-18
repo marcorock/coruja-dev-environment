@@ -116,7 +116,7 @@ command_db_backup() {
         exit 1
     fi
 
-    local backup_dir="${CORUJA_ROOT}/backups"
+    local backup_dir="${CORUJA_BACKUPS_DIR}"
     local timestamp
     local backup_file
 
@@ -163,7 +163,11 @@ command_db_restore() {
     fi
 
     if [[ "$input_file" != /* ]]; then
-        input_file="${CORUJA_ROOT}/${input_file}"
+        if [[ -f "${CORUJA_BACKUPS_DIR}/${input_file}" ]]; then
+            input_file="${CORUJA_BACKUPS_DIR}/${input_file}"
+        else
+            input_file="${CORUJA_ROOT}/${input_file}"
+        fi
     fi
 
     if [[ ! -f "$input_file" ]]; then
