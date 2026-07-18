@@ -151,7 +151,7 @@ EOF
 echo "Instalando dependências do Composer"
 
 docker compose exec -T \
-    --user "$(id -u):$(id -g)" \
+    --user developer \
     -e HOME=/home/developer \
     -e COMPOSER_HOME=/home/developer/.composer \
     -w "/var/www/projects/${PROJECT_NAME}" \

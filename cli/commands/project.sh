@@ -196,7 +196,7 @@ command_project_clone() {
     command_db_create "$target_database"
 
     docker compose exec -T \
-        --user "$(id -u):$(id -g)" \
+        --user developer \
         -e HOME=/home/developer \
         -e COMPOSER_HOME=/home/developer/.composer \
         -w "/var/www/projects/${target_name}" \
