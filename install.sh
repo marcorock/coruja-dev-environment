@@ -11,6 +11,7 @@ source "${ROOT_DIR}/installer/core/common.sh"
 source "${ROOT_DIR}/installer/core/output.sh"
 source "${ROOT_DIR}/installer/core/system.sh"
 source "${ROOT_DIR}/installer/core/flow.sh"
+source "${ROOT_DIR}/installer/core/interaction.sh"
 
 source "${ROOT_DIR}/installer/checks/dependencies.sh"
 source "${ROOT_DIR}/installer/checks/validation.sh"
@@ -19,6 +20,7 @@ source "${ROOT_DIR}/installer/setup/directories.sh"
 source "${ROOT_DIR}/installer/setup/environment.sh"
 
 source "${ROOT_DIR}/installer/actions/install_cli.sh"
+
 
 
 main() {

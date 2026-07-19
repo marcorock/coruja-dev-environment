@@ -127,7 +127,7 @@ install_cli() {
         echo "  Novo:  ${resolved_source}"
         echo
 
-        if ! read -r -p "Substituir o link existente? [s/N] " confirmation; then
+        if ask_confirmation "Substituir o link existente?"; then
             confirmation="n"
         fi
 
@@ -151,7 +151,7 @@ install_cli() {
         echo "  ${target_file}"
         echo
 
-        if ! read -r -p "Substituir o arquivo existente? [s/N] " confirmation; then
+        if ask_confirmation "Substituir o arquivo existente? [s/N] " confirmation; then
             confirmation="n"
         fi
 
