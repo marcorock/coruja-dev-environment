@@ -5,40 +5,38 @@ check_command() {
     local display_name="${2:-$1}"
 
     if command -v "$command_name" >/dev/null 2>&1; then
-        echo "✓ ${display_name}"
+        output_success "${display_name}"
         return 0
     fi
 
-    echo "✗ ${display_name} não encontrado"
+    output_error "${display_name} não encontrado"
     return 1
 }
 
 check_docker_running() {
     if docker info >/dev/null 2>&1; then
-        echo "✓ Docker em execução"
+        output_success "Docker em execução"
         return 0
     fi
 
-    echo "✗ Docker instalado, mas não está em execução"
+    output_error "Docker instalado, mas não está em execução"
     return 1
 }
 
 check_docker_compose() {
     if docker compose version >/dev/null 2>&1; then
-        echo "✓ Docker Compose"
+        output_success "Docker Compose"
         return 0
     fi
 
-    echo "✗ Docker Compose não disponível"
+    output_error "Docker Compose não disponível"
     return 1
 }
 
 check_dependencies() {
     local failures=0
 
-    echo
-    echo "Verificando dependências..."
-    echo
+    output_step "Verificando dependências..."
 
     if ! check_command bash "Bash"; then
         failures=$((failures + 1))
@@ -67,9 +65,9 @@ check_dependencies() {
     echo
 
     if ((failures > 0)); then
-        echo "Foram encontradas ${failures} dependência(s) ausente(s) ou indisponível(is)."
+        output_error "Foram encontradas ${failures} dependência(s) ausente(s) ou indisponível(is)."
         return 1
     fi
 
-    echo "Todas as dependências estão disponíveis."
+    output_success "Todas as dependências estão disponíveis."
 }

@@ -8,6 +8,7 @@ ROOT_DIR="$(
 )"
 
 source "${ROOT_DIR}/installer/core/common.sh"
+source "${ROOT_DIR}/installer/core/output.sh"
 source "${ROOT_DIR}/installer/core/system.sh"
 
 source "${ROOT_DIR}/installer/checks/dependencies.sh"
