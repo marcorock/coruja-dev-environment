@@ -381,6 +381,7 @@ O comando verifica:
 - [ ] configuração interativa;
 - [x] testes automatizados da CLI;
 - [x] validação completa em macOS;
-- [ ] validação completa em Linux;
+- [x] validação completa em WSL;
+- [ ] validação completa em Linux nativo;
 - [ ] documentação de migração;
 - [ ] templates de projeto.
