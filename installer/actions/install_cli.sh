@@ -127,11 +127,7 @@ install_cli() {
         echo "  Novo:  ${resolved_source}"
         echo
 
-        if ask_confirmation "Substituir o link existente?"; then
-            confirmation="n"
-        fi
-
-        if [[ ! "$confirmation" =~ ^[sS]$ ]]; then
+        if ! ask_confirmation "Substituir o link existente?"; then
             output_warning "Instalação da CLI mantida sem alterações"
             return 0
         fi
@@ -151,11 +147,7 @@ install_cli() {
         echo "  ${target_file}"
         echo
 
-        if ask_confirmation "Substituir o arquivo existente? [s/N] " confirmation; then
-            confirmation="n"
-        fi
-
-        if [[ ! "$confirmation" =~ ^[sS]$ ]]; then
+        if ! ask_confirmation "Substituir o arquivo existente?"; then
             output_warning "Instalação da CLI mantida sem alterações"
             return 0
         fi
