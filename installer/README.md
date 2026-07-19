@@ -53,3 +53,22 @@ Exemplos:
 - apresentação das URLs;
 - próximos comandos;
 - resultado final da instalação.
+
+## Fluxo de execução
+
+O instalador executa três etapas principais:
+
+1. **prepare_installation()**
+   - detecção do sistema;
+   - validação de dependências;
+   - criação dos diretórios;
+   - geração do `.env`;
+   - validação da configuração.
+
+2. **execute_installation()**
+   - instalação da CLI;
+   - demais ações futuras.
+
+3. **finish_installation()**
+   - resumo da instalação;
+   - próximos passos.
