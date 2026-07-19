@@ -5,6 +5,13 @@ on:
     branches:
       - main
       - "audit/**"
+      - "feat/**"
+      - "fix/**"
+      - "docs/**"
+      - "test/**"
+      - "ci/**"
+      - "refactor/**"
+      - "chore/**"
 
   pull_request:
     branches:
