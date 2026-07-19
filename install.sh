@@ -11,6 +11,7 @@ source "${ROOT_DIR}/installer/common.sh"
 source "${ROOT_DIR}/installer/system.sh"
 source "${ROOT_DIR}/installer/dependencies.sh"
 source "${ROOT_DIR}/installer/directories.sh"
+source "${ROOT_DIR}/installer/environment.sh"
 
 main() {
     show_banner
@@ -20,6 +21,8 @@ main() {
     check_dependencies
 
     create_directories
+
+    generate_environment_file
 
     echo
     echo "Instalador inicializado com sucesso."
