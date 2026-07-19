@@ -17,6 +17,8 @@ source "${ROOT_DIR}/installer/checks/validation.sh"
 source "${ROOT_DIR}/installer/setup/directories.sh"
 source "${ROOT_DIR}/installer/setup/environment.sh"
 
+source "${ROOT_DIR}/installer/actions/install_cli.sh"
+
 main() {
     show_banner
 
@@ -29,6 +31,8 @@ main() {
     generate_environment_file
 
     validate_environment
+
+    install_cli
 
     echo
     echo "Instalador inicializado com sucesso."
