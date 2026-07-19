@@ -7,12 +7,14 @@ ROOT_DIR="$(
     pwd
 )"
 
-source "${ROOT_DIR}/installer/common.sh"
-source "${ROOT_DIR}/installer/system.sh"
-source "${ROOT_DIR}/installer/dependencies.sh"
-source "${ROOT_DIR}/installer/directories.sh"
-source "${ROOT_DIR}/installer/environment.sh"
-source "${ROOT_DIR}/installer/validation.sh"
+source "${ROOT_DIR}/installer/core/common.sh"
+source "${ROOT_DIR}/installer/core/system.sh"
+
+source "${ROOT_DIR}/installer/checks/dependencies.sh"
+source "${ROOT_DIR}/installer/checks/validation.sh"
+
+source "${ROOT_DIR}/installer/setup/directories.sh"
+source "${ROOT_DIR}/installer/setup/environment.sh"
 
 main() {
     show_banner
