@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+INSTALLER_ENVIRONMENT_STARTED=false
 
 start_environment() {
     output_step "Inicialização do ambiente"
@@ -11,6 +12,8 @@ start_environment() {
     output_info "Iniciando os containers..."
 
     if run_cli up; then
+        INSTALLER_ENVIRONMENT_STARTED=true
+
         output_success "Ambiente iniciado"
         return 0
     fi

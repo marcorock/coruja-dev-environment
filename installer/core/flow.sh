@@ -22,6 +22,8 @@ execute_installation() {
 
     start_environment
 
+    run_post_start_diagnostic
+
 }
 
 finish_installation() {
