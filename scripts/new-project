@@ -2,7 +2,8 @@
 
 set -e
 
-PROJECT_NAME="$1"
+PROJECT_NAME="${1:-}"
+TEMPLATE_NAME="${2:-php-mvc-basic}"
 
 if [ -z "$PROJECT_NAME" ]; then
     echo "Uso: ./scripts/new-project nome-do-projeto"
@@ -14,11 +15,18 @@ if ! [[ "$PROJECT_NAME" =~ ^[a-z0-9-]+$ ]]; then
     exit 1
 fi
 
+if ! [[ "$TEMPLATE_NAME" =~ ^[a-z0-9-]+$ ]]; then
+    echo "Nome de template inválido: ${TEMPLATE_NAME}"
+    echo "Use apenas letras minúsculas, números e hífens."
+    exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENVIRONMENT_DIR="$(dirname "$SCRIPT_DIR")"
-TEMPLATE_NAME="php-mvc-basic"
+
 TEMPLATE_DIR="${ENVIRONMENT_DIR}/project-templates/${TEMPLATE_NAME}"
 TEMPLATE_FILES_DIR="${TEMPLATE_DIR}/files"
+TEMPLATE_CONFIG_FILE="${TEMPLATE_DIR}/template.conf"
 
 cd "$ENVIRONMENT_DIR"
 
@@ -27,11 +35,34 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
+if [[ ! -d "$TEMPLATE_DIR" ]]; then
+    echo "Template não encontrado: ${TEMPLATE_NAME}"
+    echo
+    echo "Templates disponíveis:"
+
+    for template_path in "${ENVIRONMENT_DIR}/project-templates"/*; do
+        [[ -d "$template_path" ]] || continue
+        echo "  $(basename "$template_path")"
+    done
+
+    exit 1
+fi
+
+if [[ ! -f "$TEMPLATE_CONFIG_FILE" ]]; then
+    echo "Configuração do template não encontrada:"
+    echo "  ${TEMPLATE_CONFIG_FILE}"
+    exit 1
+fi
+
 if [[ ! -d "$TEMPLATE_FILES_DIR" ]]; then
-    echo "Template não encontrado:"
+    echo "Arquivos do template não encontrados:"
     echo "  ${TEMPLATE_FILES_DIR}"
     exit 1
 fi
+
+set -a
+source "$TEMPLATE_CONFIG_FILE"
+set +a
 
 render_template() {
     local source_file="$1"
@@ -70,6 +101,7 @@ fi
 echo "Criando projeto: $PROJECT_NAME"
 
 echo "Aplicando template: ${TEMPLATE_NAME}"
+echo "Descrição: ${TEMPLATE_DESCRIPTION:-sem descrição}"
 
 mkdir -p "$PROJECT_PATH"
 

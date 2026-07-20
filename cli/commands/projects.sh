@@ -2,16 +2,41 @@
 
 command_new() {
     local project_name="${1:-}"
+    local template_name="php-mvc-basic"
+    local argument
+
+    shift || true
 
     if [[ -z "$project_name" ]]; then
         echo "Informe o nome do projeto."
-        echo ""
-        echo "Exemplo:"
+        echo
+        echo "Uso:"
         echo "  coruja new meu-projeto"
+        echo "  coruja new meu-projeto --template=php-mvc-basic"
         exit 1
     fi
 
-    "${CORUJA_ROOT}/scripts/new-project" "$project_name"
+    for argument in "$@"; do
+        case "$argument" in
+            --template=*)
+                template_name="${argument#--template=}"
+                ;;
+
+            *)
+                echo "Opção desconhecida: ${argument}"
+                exit 1
+                ;;
+        esac
+    done
+
+    if [[ -z "$template_name" ]]; then
+        echo "Informe um template válido."
+        exit 1
+    fi
+
+    "${CORUJA_ROOT}/scripts/new-project" \
+        "$project_name" \
+        "$template_name"
 }
 
 command_projects() {
