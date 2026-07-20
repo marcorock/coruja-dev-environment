@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+INSTALLER_ENVIRONMENT_HEALTHY=false
 
 run_initial_diagnostic() {
     output_step "Executando diagnóstico inicial..."
@@ -8,6 +9,8 @@ run_initial_diagnostic() {
     echo
 
     if run_cli doctor; then
+        INSTALLER_ENVIRONMENT_HEALTHY=true
+
         output_success "Diagnóstico inicial concluído sem problemas"
         return 0
     fi
@@ -57,5 +60,6 @@ run_post_start_diagnostic() {
     output_info \
         "Execute 'coruja doctor' para verificar as pendências"
 
-    return 1
+    INSTALLER_ENVIRONMENT_HEALTHY=false
+    return 0
 }
