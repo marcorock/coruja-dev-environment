@@ -50,6 +50,12 @@ existir, evitando duplicação de lógica.
 ## finalize
 
 Etapas finais e resumo da instalação.
+- resumo do sistema operacional detectado;
+- caminhos principais do ambiente;
+- estado da CLI;
+- estado dos containers;
+- URLs úteis;
+- próximos comandos.
 
 Exemplos:
 
@@ -76,5 +82,6 @@ O instalador executa três etapas principais:
    - demais ações futuras.
 
 3. **finish_installation()**
-   - resumo da instalação;
-   - próximos passos.
+   - apresentação do resumo final;
+   - exibição dos caminhos e URLs;
+   - indicação dos próximos comandos.

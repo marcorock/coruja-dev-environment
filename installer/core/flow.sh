@@ -28,8 +28,6 @@ execute_installation() {
 
 finish_installation() {
 
-    output_step "Instalação concluída"
-
-    output_success "Coruja Dev Environment preparado."
+    show_installation_summary
 
 }

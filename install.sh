@@ -24,6 +24,8 @@ source "${ROOT_DIR}/installer/actions/run_cli.sh"
 source "${ROOT_DIR}/installer/actions/diagnostics.sh"
 source "${ROOT_DIR}/installer/actions/start_environment.sh"
 
+source "${ROOT_DIR}/installer/finalize/summary.sh"
+
 
 
 main() {
