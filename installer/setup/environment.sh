@@ -12,8 +12,13 @@ generate_environment_file() {
         return 0
     fi
 
-    user_uid="$(id -u)"
-    user_gid="$(id -g)"
+    if [[ "${OPERATING_SYSTEM}" == "macOS" ]]; then
+        user_uid=1000
+        user_gid=1000
+    else
+        user_uid="$(id -u)"
+        user_gid="$(id -g)"
+    fi
 
     echo
     echo "Gerando configuração do ambiente..."
