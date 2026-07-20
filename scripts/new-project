@@ -16,6 +16,9 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENVIRONMENT_DIR="$(dirname "$SCRIPT_DIR")"
+TEMPLATE_NAME="php-mvc-basic"
+TEMPLATE_DIR="${ENVIRONMENT_DIR}/project-templates/${TEMPLATE_NAME}"
+TEMPLATE_FILES_DIR="${TEMPLATE_DIR}/files"
 
 cd "$ENVIRONMENT_DIR"
 
@@ -23,6 +26,33 @@ if [ ! -f ".env" ]; then
     echo "Arquivo .env não encontrado."
     exit 1
 fi
+
+if [[ ! -d "$TEMPLATE_FILES_DIR" ]]; then
+    echo "Template não encontrado:"
+    echo "  ${TEMPLATE_FILES_DIR}"
+    exit 1
+fi
+
+render_template() {
+    local source_file="$1"
+    local target_file="$2"
+    local content
+
+    if [[ ! -f "$source_file" ]]; then
+        echo "Arquivo de template não encontrado:"
+        echo "  ${source_file}"
+        return 1
+    fi
+
+    content="$(cat "$source_file")"
+
+    content="${content//'{{PROJECT_NAME}}'/$PROJECT_NAME}"
+    content="${content//'{{DATABASE_NAME}}'/$DATABASE_NAME}"
+    content="${content//'{{MARIADB_USER}}'/$MARIADB_USER}"
+    content="${content//'{{MARIADB_PASSWORD}}'/$MARIADB_PASSWORD}"
+
+    printf '%s\n' "$content" > "$target_file"
+}
 
 set -a
 source "${ENVIRONMENT_DIR}/.env"
@@ -39,100 +69,28 @@ fi
 
 echo "Criando projeto: $PROJECT_NAME"
 
-mkdir -p "$PROJECT_PATH"/{public,app,templates,config,routes,storage/logs}
+echo "Aplicando template: ${TEMPLATE_NAME}"
 
-cat > "$PROJECT_PATH/composer.json" <<EOF
-{
-    "name": "coruja/${PROJECT_NAME}",
-    "description": "Projeto PHP criado com o Coruja Dev Environment",
-    "type": "project",
-    "require": {
-        "php": "^8.3",
-        "pecee/simple-router": "^5.4",
-        "twig/twig": "^3.24",
-        "twbs/bootstrap": "^5.3",
-        "twbs/bootstrap-icons": "^1.13",
-        "vlucas/phpdotenv": "^5.6",
-        "mobiledetect/mobiledetectlib": "^4.8"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\\\": "app/"
-        }
-    }
-}
-EOF
+mkdir -p "$PROJECT_PATH"
 
-cat > "$PROJECT_PATH/.env" <<EOF
-APP_NAME="${PROJECT_NAME}"
-APP_ENV=development
-APP_DEBUG=true
-APP_URL=http://${PROJECT_NAME}.localhost
+cp -R "${TEMPLATE_FILES_DIR}/." "$PROJECT_PATH/"
 
-DB_HOST=database
-DB_PORT=3306
-DB_DATABASE=${DATABASE_NAME}
-DB_USERNAME=${MARIADB_USER}
-DB_PASSWORD=${MARIADB_PASSWORD}
+render_template \
+    "${PROJECT_PATH}/composer.json.tpl" \
+    "${PROJECT_PATH}/composer.json"
 
-REDIS_HOST=redis
-REDIS_PORT=6379
-REDIS_DATABASE=0
-EOF
+render_template \
+    "${PROJECT_PATH}/env.tpl" \
+    "${PROJECT_PATH}/.env"
 
-cat > "$PROJECT_PATH/.gitignore" <<EOF
-/vendor/
-/.env
-/storage/logs/*
-!/storage/logs/.gitkeep
-.DS_Store
-EOF
+render_template \
+    "${PROJECT_PATH}/gitignore.tpl" \
+    "${PROJECT_PATH}/.gitignore"
 
-touch "$PROJECT_PATH/storage/logs/.gitkeep"
-
-cat > "$PROJECT_PATH/public/index.php" <<'EOF'
-<?php
-
-declare(strict_types=1);
-
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-use Dotenv\Dotenv;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
-$dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->safeLoad();
-
-$loader = new FilesystemLoader(dirname(__DIR__) . '/templates');
-$twig = new Environment($loader, [
-    'cache' => false,
-    'debug' => true,
-]);
-
-echo $twig->render('home.html.twig', [
-    'projectName' => $_ENV['APP_NAME'] ?? 'Projeto PHP',
-    'phpVersion' => PHP_VERSION,
-]);
-EOF
-
-cat > "$PROJECT_PATH/templates/home.html.twig" <<'EOF'
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ projectName }}</title>
-</head>
-<body>
-    <main>
-        <h1>{{ projectName }}</h1>
-        <p>PHP {{ phpVersion }}</p>
-        <p>Projeto criado com sucesso.</p>
-    </main>
-</body>
-</html>
-EOF
+rm \
+    "${PROJECT_PATH}/composer.json.tpl" \
+    "${PROJECT_PATH}/env.tpl" \
+    "${PROJECT_PATH}/gitignore.tpl"
 
 echo "Criando banco: $DATABASE_NAME"
 
