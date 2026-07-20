@@ -25,6 +25,7 @@ source "${ROOT_DIR}/installer/actions/diagnostics.sh"
 source "${ROOT_DIR}/installer/actions/start_environment.sh"
 
 source "${ROOT_DIR}/installer/finalize/summary.sh"
+source "${ROOT_DIR}/installer/finalize/getting_started.sh"
 
 
 
@@ -37,6 +38,8 @@ main() {
     execute_installation
 
     finish_installation
+
+    show_getting_started
 
 }
 

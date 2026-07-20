@@ -56,6 +56,8 @@ Etapas finais e resumo da instalação.
 - estado dos containers;
 - URLs úteis;
 - próximos comandos.
+- orientação para criação do primeiro projeto;
+- apresentação dos comandos essenciais.
 
 Exemplos:
 
@@ -85,3 +87,4 @@ O instalador executa três etapas principais:
    - apresentação do resumo final;
    - exibição dos caminhos e URLs;
    - indicação dos próximos comandos.
+   - criação opcional do primeiro projeto.
