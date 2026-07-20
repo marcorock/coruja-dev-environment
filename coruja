@@ -43,13 +43,17 @@ Ambiente:
   shell                           Abre o Zsh no container PHP
 
 Projetos:
-  new <nome>                      Cria um projeto
+  new <nome> [--template=<nome>]  Cria um projeto
   projects                        Lista os projetos
   project list                    Lista os projetos
   project info <nome>             Exibe informações do projeto
   project clone <origem> <destino>
                                   Duplica um projeto
   project remove <nome>           Remove um projeto
+
+Exemplos:
+  coruja new meu-projeto
+  coruja new minha-api --template=php-mvc-basic
 
 Banco de dados:
   db list                         Lista os bancos
@@ -109,7 +113,8 @@ case "${1:-help}" in
         ;;
 
     new)
-        command_new "${2:-}"
+        shift
+        command_new "$@"
         ;;
     
     project)
