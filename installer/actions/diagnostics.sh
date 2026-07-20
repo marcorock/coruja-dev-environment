@@ -42,6 +42,8 @@ run_post_start_diagnostic() {
             "Tentativa ${attempt} de ${max_attempts}"
 
         if run_cli doctor; then
+            INSTALLER_ENVIRONMENT_HEALTHY=true
+            
             output_success "Ambiente iniciado e validado com sucesso"
             return 0
         fi
