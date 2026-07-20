@@ -21,6 +21,7 @@ source "${ROOT_DIR}/installer/setup/environment.sh"
 
 source "${ROOT_DIR}/installer/actions/install_cli.sh"
 source "${ROOT_DIR}/installer/actions/run_cli.sh"
+source "${ROOT_DIR}/installer/actions/diagnostics.sh"
 
 
 

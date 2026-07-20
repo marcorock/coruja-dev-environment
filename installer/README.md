@@ -34,6 +34,7 @@ Exemplos:
 ## actions
 
 Ações executadas após a preparação inicial.
+- execução de diagnósticos iniciais e posteriores à instalação;
 
 Exemplos:
 
@@ -67,6 +68,7 @@ O instalador executa três etapas principais:
 
 2. **execute_installation()**
    - instalação da CLI;
+   - execução do diagnóstico inicial;
    - demais ações futuras.
 
 3. **finish_installation()**

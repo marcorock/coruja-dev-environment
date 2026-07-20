@@ -18,6 +18,8 @@ execute_installation() {
 
     install_cli
 
+    run_initial_diagnostic
+
 }
 
 finish_installation() {
