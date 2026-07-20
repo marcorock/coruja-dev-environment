@@ -20,6 +20,8 @@ execute_installation() {
 
     run_initial_diagnostic
 
+    start_environment
+
 }
 
 finish_installation() {
