@@ -6,6 +6,7 @@ source "${CORUJA_ROOT}/cli/doctor/tools.sh"
 source "${CORUJA_ROOT}/cli/doctor/services.sh"
 source "${CORUJA_ROOT}/cli/doctor/http.sh"
 source "${CORUJA_ROOT}/cli/doctor/https.sh"
+source "${CORUJA_ROOT}/cli/doctor/node.sh"
 source "${CORUJA_ROOT}/cli/doctor/summary.sh"
 
 command_doctor() {
@@ -21,6 +22,7 @@ command_doctor() {
     doctor_check_services
     doctor_check_http
     doctor_check_https
+    doctor_check_node
 
     doctor_summary
 }
