@@ -18,6 +18,7 @@ source "${ROOT_DIR}/installer/checks/validation.sh"
 
 source "${ROOT_DIR}/installer/setup/directories.sh"
 source "${ROOT_DIR}/installer/setup/environment.sh"
+source "${ROOT_DIR}/installer/setup/certificates.sh"
 
 source "${ROOT_DIR}/installer/actions/install_cli.sh"
 source "${ROOT_DIR}/installer/actions/run_cli.sh"
@@ -38,8 +39,6 @@ main() {
     execute_installation
 
     finish_installation
-
-    show_getting_started
 
 }
 

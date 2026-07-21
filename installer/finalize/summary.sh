@@ -24,6 +24,24 @@ show_installation_summary() {
     echo "  Caminho: $(command -v "${CORUJA_CLI_NAME}" 2>/dev/null || echo "não encontrado")"
     echo
 
+    echo "HTTPS:"
+
+    if [[ "$INSTALLER_SSL_READY" == true ]]; then
+        echo "  Certificado: preparado"
+    else
+        echo "  Certificado: pendente"
+    fi
+
+    if [[ "$INSTALLER_SSL_TRUSTED" == true ]]; then
+        echo "  Confiança: configurada"
+    elif [[ "${OPERATING_SYSTEM}" == "WSL" && "$INSTALLER_SSL_READY" == true ]]; then
+        echo "  Confiança: requer importação no Windows"
+    else
+        echo "  Confiança: não confirmada"
+    fi
+
+    echo
+
     echo "Ambiente:"
 
     if [[ "$INSTALLER_ENVIRONMENT_STARTED" != true ]]; then
