@@ -73,7 +73,7 @@ check_certificate_trust() {
     fi
 
     if [[ "${OPERATING_SYSTEM}" == "WSL" ]]; then
-        show_wsl_certificate_notice
+        install_wsl_ca_in_windows
         return 0
     fi
 
@@ -114,6 +114,69 @@ show_mkcert_installation_help() {
     echo "  ./install.sh"
 }
 
+install_wsl_ca_in_windows() {
+    local ca_root
+    local ca_file
+    local windows_ca_file
+
+    ca_root="$(mkcert -CAROOT 2>/dev/null || true)"
+    ca_file="${ca_root}/rootCA.pem"
+
+    if [[ -z "$ca_root" || ! -f "$ca_file" ]]; then
+        output_warning "Autoridade certificadora local não encontrada"
+        show_wsl_certificate_notice
+        return 0
+    fi
+
+    if ! command -v wslpath >/dev/null 2>&1; then
+        output_warning "wslpath não está disponível"
+        show_wsl_certificate_notice
+        return 0
+    fi
+
+    if ! command -v certutil.exe >/dev/null 2>&1; then
+        output_warning "certutil.exe não está acessível pelo WSL"
+        show_wsl_certificate_notice
+        return 0
+    fi
+
+    windows_ca_file="$(wslpath -w "$ca_file")"
+
+    echo
+    echo "Para que Chrome, Edge e outros aplicativos do Windows"
+    echo "confiem nos projetos locais, a CA do mkcert precisa ser"
+    echo "adicionada ao repositório de certificados do usuário."
+    echo
+    echo "Certificado:"
+    echo "  ${windows_ca_file}"
+    echo
+
+    if ! ask_confirmation \
+        "Deseja instalar a CA local no Windows agora?"
+    then
+        output_warning "Importação da CA no Windows ignorada"
+        show_wsl_certificate_notice
+        return 0
+    fi
+
+    output_info "Importando CA no repositório do usuário do Windows..."
+
+    if certutil.exe \
+        -user \
+        -addstore \
+        Root \
+        "$windows_ca_file" \
+        >/dev/null
+    then
+        INSTALLER_SSL_TRUSTED=true
+        output_success "CA local instalada no Windows"
+        return 0
+    fi
+
+    output_warning "Não foi possível importar automaticamente a CA no Windows"
+    show_wsl_certificate_notice
+}
+
 show_wsl_certificate_notice() {
     local ca_root
     local ca_file
@@ -139,5 +202,9 @@ show_wsl_certificate_notice() {
     fi
 
     echo
-    echo "A importação automática no Windows será adicionada em uma etapa própria."
+    echo "Para importar manualmente no Windows:"
+    echo
+    echo "  certutil -user -addstore Root \"CAMINHO_DA_CA\""
+    echo
+    echo "Feche e abra novamente o navegador após a importação."
 }
