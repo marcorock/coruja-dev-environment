@@ -36,4 +36,6 @@ finish_installation() {
 
     show_installation_summary
 
+    show_getting_started
+
 }
