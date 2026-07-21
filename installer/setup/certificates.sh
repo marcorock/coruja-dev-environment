@@ -31,7 +31,10 @@ prepare_local_certificates() {
     output_info "Instalando a autoridade certificadora local..."
 
     if mkcert -install; then
-        INSTALLER_SSL_TRUSTED=true
+        if [[ "${OPERATING_SYSTEM}" != "WSL" ]]; then
+            INSTALLER_SSL_TRUSTED=true
+        fi
+
         output_success "Autoridade certificadora local instalada"
     else
         output_warning "Não foi possível instalar automaticamente a autoridade certificadora"
