@@ -109,19 +109,15 @@ doctor_check_http_redirect() {
     )"
 
     redirect_location="$(
-        awk '
-            BEGIN {
-                IGNORECASE = 1
-            }
-
-            /^location:/ {
-                sub(/\r$/, "", $0)
-                sub(/^[^:]+:[[:space:]]*/, "", $0)
-                print
-                exit
-            }
-        ' <<< "$headers"
-    )"
+    awk '
+        tolower($1) == "location:" {
+            sub(/\r$/, "", $0)
+            sub(/^[^:]+:[[:space:]]*/, "", $0)
+            print
+            exit
+        }
+    ' <<< "$headers"
+)"
 
     if [[ "$status_code" =~ ^30[1278]$ ]] &&
         [[ "$redirect_location" == https://* ]]
