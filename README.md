@@ -187,8 +187,6 @@ coruja doctor
 
 ## URLs
 
-## URLs
-
 | Serviço | Endereço |
 |---|---|
 | Projetos | `https://nome-do-projeto.localhost` |
@@ -200,8 +198,6 @@ As requisições HTTP dos projetos, do phpMyAdmin e do Mailpit são redirecionad
 automaticamente para HTTPS.
 
 Os certificados são gerados localmente com `mkcert`.
-
-## Serviços internos
 
 ## Serviços internos
 
