@@ -1,0 +1,38 @@
+FROM node:24-alpine3.24
+
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+RUN apk add --no-cache \
+        bash \
+        git \
+        openssh-client \
+    && deluser --remove-home node \
+    && addgroup \
+        -g "${USER_GID}" \
+        developer \
+    && adduser \
+        -D \
+        -u "${USER_UID}" \
+        -G developer \
+        -s /bin/bash \
+        developer \
+    && mkdir -p \
+        /var/www/projects \
+        /home/developer/.npm \
+        /home/developer/.cache/node/corepack \
+    && chown -R developer:developer \
+        /var/www/projects \
+        /home/developer
+
+RUN corepack enable
+
+USER developer
+
+RUN corepack install --global \
+        pnpm@11.15.1 \
+        yarn@1.22.22
+
+WORKDIR /var/www/projects
+
+CMD ["sleep", "infinity"]

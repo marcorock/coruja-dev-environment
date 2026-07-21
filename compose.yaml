@@ -76,6 +76,30 @@ services:
     networks:
       - coruja-network
 
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+      args:
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+
+    volumes:
+      - "${PROJECTS_ROOT}:/var/www/projects"
+
+    working_dir: /var/www/projects
+
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
+
+    command:
+      - sleep
+      - infinity
+
+    restart: unless-stopped
+
+    networks:
+      - coruja-network
+
   database:
     image: mariadb:11.8.8
 
