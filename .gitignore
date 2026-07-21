@@ -37,3 +37,7 @@ cache/
 
 # macOS
 .DS_Store
+
+# Certificados locais
+certs/*
+!certs/.gitkeep

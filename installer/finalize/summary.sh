@@ -38,8 +38,8 @@ show_installation_summary() {
 
     if [[ "$INSTALLER_ENVIRONMENT_STARTED" == true ]]; then
         echo "Acessos:"
-        echo "  phpMyAdmin: http://db.localhost"
-        echo "  Mailpit:    http://mail.localhost"
+        echo "  phpMyAdmin: https://db.localhost"
+        echo "  Mailpit:    https://mail.localhost"
         echo
     fi
 

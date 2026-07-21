@@ -36,7 +36,7 @@ show_getting_started() {
 
             if run_cli new "$project_name"; then
                 output_success "Projeto criado com sucesso"
-                output_info "Acesse: http://${project_name}.localhost"
+                output_info "Acesse: https://${project_name}.localhost"
                 return 0
             fi
 

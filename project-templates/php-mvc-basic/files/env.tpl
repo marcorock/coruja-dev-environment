@@ -1,7 +1,7 @@
 APP_NAME="{{PROJECT_NAME}}"
 APP_ENV=development
 APP_DEBUG=true
-APP_URL=http://{{PROJECT_NAME}}.localhost
+APP_URL=https://{{PROJECT_NAME}}.localhost
 
 DB_HOST=database
 DB_PORT=3306
