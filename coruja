@@ -25,6 +25,7 @@ source "${CORUJA_ROOT}/cli/commands/database.sh"
 source "${CORUJA_ROOT}/cli/commands/project.sh"
 source "${CORUJA_ROOT}/cli/commands/services.sh"
 source "${CORUJA_ROOT}/cli/commands/redis.sh"
+source "${CORUJA_ROOT}/cli/commands/node.sh"
 
 show_help() {
     show_header
@@ -73,6 +74,13 @@ Redis:
   redis shell                     Abre o terminal Redis
   redis info                      Exibe informações do Redis
   redis flush                     Apaga os dados do Redis
+
+Node.js:
+  node [projeto] <argumentos>     Executa Node.js
+  npm [projeto] <argumentos>      Executa npm
+  npx [projeto] <argumentos>      Executa npx
+  pnpm [projeto] <argumentos>     Executa pnpm
+  yarn [projeto] <argumentos>     Executa Yarn
 
 Sistema:
   doctor                          Verifica a saúde do ambiente
@@ -130,6 +138,13 @@ case "${1:-help}" in
 
     redis)
         command_redis "${2:-help}" "${3:-}"
+        ;;
+
+    node|npm|npx|pnpm|yarn)
+        node_tool="$1"
+        shift
+
+        node_run_tool "$node_tool" "$@"
         ;;
 
     doctor)
