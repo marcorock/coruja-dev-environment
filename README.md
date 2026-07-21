@@ -9,26 +9,34 @@ integrados e ferramentas próprias de linha de comando.
 
 ## Status
 
-**Versão atual:** `v0.1.0`
+**Versão em desenvolvimento:** `v0.2.0`
 
-Esta versão inclui:
+A versão `v0.2.0` está sendo preparada na branch de desenvolvimento e inclui:
 
-- Docker Compose
-- Traefik
-- PHP 8.3.32
-- Apache
-- MariaDB 11.8.8
-- Redis 8.8
-- phpMyAdmin
-- Mailpit
-- Composer
-- Xdebug
-- Zsh
-- Dev Containers
-- CLI `coruja`
-- criação, clonagem e remoção de projetos
-- criação, backup e restauração de bancos
-- diagnóstico do ambiente
+- Docker Compose;
+- Traefik com HTTPS local;
+- certificados locais com `mkcert`;
+- PHP 8.3 com Apache;
+- MariaDB 11;
+- Redis;
+- phpMyAdmin;
+- Mailpit;
+- Composer;
+- Node.js 24;
+- npm e npx;
+- Corepack;
+- pnpm;
+- Yarn;
+- Xdebug;
+- Zsh;
+- Dev Containers;
+- instalador automatizado;
+- CLI `coruja`;
+- criação de projetos por templates;
+- criação, clonagem e remoção de projetos;
+- criação, backup e restauração de bancos;
+- diagnóstico modular do ambiente;
+- testes automatizados da CLI.
 
 ## Projetos relacionados
 
@@ -74,11 +82,14 @@ projetos PHP que não utilizam o Coruja Framework.
 
 ## Pré-requisitos
 
-- Docker Desktop ou Docker Engine
-- Docker Compose
-- Git
-- Bash
-- portas 80, 3306 e 8082 disponíveis
+- Docker Desktop ou Docker Engine;
+- Docker Compose;
+- Git;
+- Bash;
+- portas `80`, `443`, `3306` e `8082` disponíveis.
+
+O instalador também utiliza o `mkcert` para gerar certificados HTTPS locais.
+Quando necessário, ele orienta ou realiza a instalação da ferramenta.
 
 ## Instalação
 
@@ -92,80 +103,68 @@ git clone git@github.com:marcorock/coruja-dev-environment.git
 cd coruja-dev-environment
 ```
 
-Crie a configuração local:
+Execute o instalador:
 
 ```bash
-cp .env.example .env
+chmod +x install.sh
+./install.sh
 ```
 
-Edite o `.env` e ajuste os caminhos para o seu usuário.
+O instalador:
 
-### Exemplo no WSL ou Linux
+1. identifica WSL, Linux ou macOS;
+2. verifica as dependências;
+3. cria os diretórios do ambiente;
+4. gera o arquivo `.env`;
+5. configura UID e GID;
+6. gera os certificados HTTPS;
+7. instala a autoridade certificadora local;
+8. valida a configuração;
+9. instala a CLI `coruja`;
+10. oferece a opção de iniciar o ambiente.
 
-```env
-CORUJA_HOME=/home/seu-usuario/www
-PROJECTS_ROOT=/home/seu-usuario/www/projects
-DB_DATA_PATH=/home/seu-usuario/www/data/mariadb
-REDIS_DATA_PATH=/home/seu-usuario/www/data/redis
-BACKUPS_PATH=/home/seu-usuario/www/backups
-TEMPLATES_PATH=/home/seu-usuario/www/templates
-```
+A configuração gerada utiliza uma estrutura semelhante a:
 
-### Exemplo no macOS
+### WSL e Linux
 
-```env
-CORUJA_HOME=/Users/seu-usuario/www
-PROJECTS_ROOT=/Users/seu-usuario/www/projects
-DB_DATA_PATH=/Users/seu-usuario/www/data/mariadb
-REDIS_DATA_PATH=/Users/seu-usuario/www/data/redis
-BACKUPS_PATH=/Users/seu-usuario/www/backups
-TEMPLATES_PATH=/Users/seu-usuario/www/templates
-```
-
-Crie os diretórios:
-
-```bash
-mkdir -p \
-    ~/www/projects \
-    ~/www/data/mariadb \
-    ~/www/data/redis \
-    ~/www/backups \
-    ~/www/templates
-```
-
-## Instalar a CLI
-
-Dê permissão de execução:
-
-```bash
-chmod +x coruja scripts/new-project
-```
-
-Crie o link simbólico:
-
-### WSL ou Linux
-
-```bash
-sudo ln -sf "$(pwd)/coruja" /usr/local/bin/coruja
+```text
+/home/<usuario>/www/
+├── coruja-dev-environment/
+├── projects/
+├── data/
+│   ├── mariadb/
+│   └── redis/
+├── backups/
+└── templates/
 ```
 
 ### macOS
 
-```bash
-sudo ln -sf "$(pwd)/coruja" /usr/local/bin/coruja
+```text
+/Users/<usuario>/www/
+├── coruja-dev-environment/
+├── projects/
+├── data/
+│   ├── mariadb/
+│   └── redis/
+├── backups/
+└── templates/
 ```
 
-Teste:
+Depois da instalação, valide a CLI:
 
 ```bash
 coruja version
 ```
 
-Resultado esperado:
+Para consultar as opções disponíveis:
 
-```text
-Coruja Dev Environment 0.1.0
+```bash
+coruja help
 ```
+
+A arquitetura do instalador está documentada em
+[`docs/architecture/installer.md`](docs/architecture/installer.md).
 
 ## Iniciar o ambiente
 
@@ -188,21 +187,33 @@ coruja doctor
 
 ## URLs
 
+## URLs
+
 | Serviço | Endereço |
 |---|---|
-| Projetos | `http://nome-do-projeto.localhost` |
-| phpMyAdmin | `http://db.localhost` |
-| Mailpit | `http://mail.localhost` |
+| Projetos | `https://nome-do-projeto.localhost` |
+| phpMyAdmin | `https://db.localhost` |
+| Mailpit | `https://mail.localhost` |
 | Traefik Dashboard | `http://localhost:8082/dashboard/` |
+
+As requisições HTTP dos projetos, do phpMyAdmin e do Mailpit são redirecionadas
+automaticamente para HTTPS.
+
+Os certificados são gerados localmente com `mkcert`.
+
+## Serviços internos
 
 ## Serviços internos
 
 | Serviço | Host interno | Porta |
 |---|---|---:|
+| PHP/Apache | `web` | `80` |
+| Node.js | `node` | interna |
 | MariaDB | `database` | `3306` |
 | Redis | `redis` | `6379` |
 | Mailpit SMTP | `mail` | `1025` |
 | Mailpit Web | `mail` | `8025` |
+| Traefik | `gateway` | `80` e `443` |
 
 ## CLI Coruja
 
@@ -222,7 +233,7 @@ coruja shell
 ### Projetos
 
 ```text
-coruja new <nome>
+coruja new <nome> [--template=<nome>]
 coruja projects
 coruja project list
 coruja project info <nome>
@@ -257,6 +268,7 @@ coruja redis shell
 coruja redis info
 coruja redis flush
 ```
+
 ### Node.js
 
 ```text
@@ -285,22 +297,43 @@ coruja help
 
 ## Criar um projeto
 
+Criar um projeto com o template padrão:
+
 ```bash
 coruja new meu-projeto
 ```
 
+Criar um projeto informando o template:
+
+```bash
+coruja new minha-api --template=php-mvc-basic
+```
+
 O comando:
 
-1. cria a estrutura do projeto;
-2. gera o arquivo `.env`;
-3. cria o banco de dados;
-4. instala as dependências do Composer;
-5. disponibiliza a aplicação no Traefik.
+1. valida o nome e o template;
+2. cria a estrutura do projeto;
+3. gera o arquivo `.env`;
+4. cria o banco de dados;
+5. instala as dependências do Composer;
+6. disponibiliza a aplicação no Traefik.
 
 Acesse:
 
 ```text
-http://meu-projeto.localhost
+https://meu-projeto.localhost
+```
+
+Os templates ficam armazenados em:
+
+```text
+project-templates/
+```
+
+O template disponível atualmente é:
+
+```text
+php-mvc-basic
 ```
 
 ## Clonar um projeto
@@ -368,37 +401,70 @@ Listen for Xdebug
 Depois acesse:
 
 ```text
-http://meu-projeto.localhost/?XDEBUG_TRIGGER=1
+https://meu-projeto.localhost/?XDEBUG_TRIGGER=1
 ```
 
 ## Diagnóstico
+
+Execute:
 
 ```bash
 coruja doctor
 ```
 
-O comando verifica:
+O diagnóstico é dividido em módulos e verifica:
 
 - diretórios;
 - permissões;
 - Docker;
 - Docker Compose;
+- arquivos de configuração;
 - MariaDB;
 - Redis;
 - Mailpit;
 - Traefik;
 - Docker Socket;
-- arquivos de configuração.
+- conectividade HTTP;
+- redirecionamento HTTP para HTTPS;
+- certificados locais;
+- configuração TLS;
+- porta HTTPS;
+- phpMyAdmin por HTTPS;
+- Mailpit por HTTPS;
+- projetos por HTTPS;
+- serviço Node.js;
+- Node.js;
+- npm;
+- npx;
+- Corepack;
+- pnpm;
+- Yarn;
+- UID do container Node.js;
+- diretório de trabalho do Node.js.
+
+Quando algum componente não está disponível, o comando informa o problema e
+retorna um código de saída diferente de zero.
 
 ## Roadmap v0.2.0
 
-- [ ] instalador automatizado;
-- [ ] importação de projetos do Laragon;
-- [x] diagnóstico HTTP completo;
-- [ ] configuração interativa;
+- [x] instalador automatizado;
+- [x] configuração de HTTPS local;
+- [x] certificados automáticos com `mkcert`;
+- [x] integração da CA entre WSL e Windows;
+- [x] diagnóstico HTTP;
+- [x] diagnóstico HTTPS;
+- [x] diagnóstico Node.js;
 - [x] testes automatizados da CLI;
-- [x] validação completa em macOS;
-- [x] validação completa em WSL;
+- [x] templates desacoplados da CLI;
+- [x] template `php-mvc-basic`;
+- [x] serviço Node.js compartilhado;
+- [x] comandos Node.js na CLI;
+- [x] validação em macOS;
+- [x] validação em WSL;
+- [ ] configuração interativa avançada;
+- [ ] importação de projetos do Laragon;
 - [ ] validação completa em Linux nativo;
 - [ ] documentação de migração;
-- [ ] templates de projeto.
+- [ ] template Laravel;
+- [ ] template WordPress;
+- [ ] publicação e roteamento opcional para servidores Vite.
