@@ -46,6 +46,31 @@ assert_contains \
     "$help_output" \
     "doctor"
 
+assert_contains \
+    "ajuda apresenta comando Node.js" \
+    "$help_output" \
+    "node [projeto] <argumentos>"
+
+assert_contains \
+    "ajuda apresenta comando npm" \
+    "$help_output" \
+    "npm [projeto] <argumentos>"
+
+assert_contains \
+    "ajuda apresenta comando npx" \
+    "$help_output" \
+    "npx [projeto] <argumentos>"
+
+assert_contains \
+    "ajuda apresenta comando pnpm" \
+    "$help_output" \
+    "pnpm [projeto] <argumentos>"
+
+assert_contains \
+    "ajuda apresenta comando Yarn" \
+    "$help_output" \
+    "yarn [projeto] <argumentos>"
+
 short_help_output="$("${CORUJA_ROOT}/coruja" -h 2>&1)"
 long_help_output="$("${CORUJA_ROOT}/coruja" --help 2>&1)"
 

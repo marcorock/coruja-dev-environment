@@ -55,6 +55,7 @@ done < <(
 
 run_test_file "${TESTS_DIR}/cli-test.sh"
 run_test_file "${TESTS_DIR}/core-test.sh"
+run_test_file "${TESTS_DIR}/node-test.sh"
 
 echo ""
 echo "════════════════════════════════════════"

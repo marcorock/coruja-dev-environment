@@ -78,11 +78,12 @@ assert_equals() {
         return 0
     fi
 
-    print_test_failure \
-        "$description" \
-        "esperado '${expected}', recebido '${actual}'"
+    print_test_failure "$description"
 
-    return 0
+    echo "  Esperado: ${expected}"
+    echo "  Recebido: ${actual}"
+
+    return 1
 }
 
 finish_tests() {
