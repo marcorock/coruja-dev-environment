@@ -257,6 +257,23 @@ coruja redis shell
 coruja redis info
 coruja redis flush
 ```
+### Node.js
+
+```text
+coruja node --version
+coruja npm --version
+coruja npm <projeto> install
+coruja npm <projeto> run dev
+coruja npx <projeto> <comando>
+coruja pnpm <projeto> install
+coruja yarn <projeto> install
+```
+
+O Node.js é executado em um container separado do PHP, utilizando o mesmo
+diretório de projetos e o mesmo UID/GID do usuário do host.
+
+Consulte a documentação completa em
+[`docs/guides/node.md`](docs/guides/node.md).
 
 ### Sistema
 
